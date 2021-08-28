@@ -1,8 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { topSoldItems } from '../actions/orderActions'
+import {
+  fiveDaysSales,
+  topSoldItems,
+  topUniqueItems,
+} from '../actions/orderActions'
 
 const initialState = {
   topSoldProducts: null,
+  topUniqueItems: null,
+  fiveDaysSales: null,
+  loading: false,
 }
 
 export const orderSlice = createSlice({
@@ -20,6 +27,30 @@ export const orderSlice = createSlice({
         state.topSoldProducts = action.payload.data.products
       })
       .addCase(topSoldItems.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload.message
+      })
+      // top five unique orders
+      .addCase(topUniqueItems.pending, (state, action) => {
+        state.loading = true
+      })
+      .addCase(topUniqueItems.fulfilled, (state, action) => {
+        state.loading = false
+        state.topUniqueItems = action.payload.data.products
+      })
+      .addCase(topUniqueItems.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload.message
+      })
+      // past five days sales
+      .addCase(fiveDaysSales.pending, (state, action) => {
+        state.loading = true
+      })
+      .addCase(fiveDaysSales.fulfilled, (state, action) => {
+        state.loading = false
+        state.fiveDaysSales = action.payload.data.salesByDay
+      })
+      .addCase(fiveDaysSales.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload.message
       })
